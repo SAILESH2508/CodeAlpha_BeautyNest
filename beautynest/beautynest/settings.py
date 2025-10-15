@@ -102,6 +102,3 @@ LOGOUT_REDIRECT_URL = '/'            # redirect after logout
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# settings.py
-RAZORPAY_KEY_ID = "rzp_test_RNh0qZpmrPFLcI"
-RAZORPAY_KEY_SECRET = "gyWUUP337T6kY15UMB2EDjKR"
