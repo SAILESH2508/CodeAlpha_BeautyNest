@@ -1,0 +1,147 @@
+{% extends 'shop/base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="signup-container">
+    <h2>✨ Create Your BeautyNest Account</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post" class="signup-form">
+        {% csrf_token %}
+
+        <!-- Non-field errors (e.g., password mismatch) -->
+        {% if form.non_field_errors %}
+            <div class="alert">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="form-group">
+            {{ form.username.errors }}
+            {{ form.username|add_class:"input-field"|attr:"placeholder:👤 Username" }}
+        </div>
+
+        <div class="form-group">
+            {{ form.email.errors }}
+            {{ form.email|add_class:"input-field"|attr:"placeholder:📧 Email" }}
+        </div>
+
+        <div class="form-group">
+            {{ form.password1.errors }}
+            {{ form.password1|add_class:"input-field"|attr:"placeholder:🔑 Password" }}
+        </div>
+
+        <div class="form-group">
+            {{ form.password2.errors }}
+            {{ form.password2|add_class:"input-field"|attr:"placeholder:🔒 Confirm Password" }}
+        </div>
+
+        <div class="form-options">
+            <label>
+                <input type="checkbox" required> I agree to the <a href="#">Terms & Conditions</a>
+            </label>
+        </div>
+
+        <button type="submit" class="btn">Sign Up</button>
+    </form>
+
+    <div class="divider">OR</div>
+
+    <div class="social-signup">
+        <button class="social-btn google">Sign Up with Google</button>
+        <button class="social-btn facebook">Sign Up with Facebook</button>
+    </div>
+
+    <p class="login-link">Already have an account? 
+        <a href="{% url 'login' %}">Log in</a>
+    </p>
+</div>
+
+<style>
+    .signup-container {
+        max-width: 420px;
+        margin: 50px auto;
+        padding: 25px;
+        background: white;
+        box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+        border-radius: 8px;
+        text-align: center;
+    }
+    .signup-container h2 {
+        margin-bottom: 20px;
+        color: #1d3557;
+    }
+    .form-group input.input-field {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    .form-group .errorlist {
+        color: #e63946;
+        font-size: 14px;
+        margin: 5px 0;
+        text-align: left;
+    }
+    .form-options {
+        text-align: left;
+        margin: 15px 0;
+        font-size: 14px;
+    }
+    .form-options a {
+        color: #e63946;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    .btn {
+        width: 100%;
+        padding: 10px;
+        background: #1d3557;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    .btn:hover {
+        background: #457b9d;
+    }
+    .divider {
+        margin: 20px 0;
+        font-weight: bold;
+        color: #666;
+    }
+    .social-signup {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .social-btn {
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .social-btn.google {
+        background: #db4437;
+        color: white;
+    }
+    .social-btn.facebook {
+        background: #3b5998;
+        color: white;
+    }
+    .login-link {
+        margin-top: 15px;
+    }
+</style>
+{% endblock %}

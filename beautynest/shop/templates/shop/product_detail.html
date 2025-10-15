@@ -1,0 +1,189 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+.product-detail {
+    max-width: 900px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    font-family: 'Poppins', sans-serif;
+}
+.product-detail h1 {
+    text-align: center;
+    color: #333;
+    font-size: 32px;
+    margin-bottom: 25px;
+}
+.media {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+.media img {
+    width: 350px;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.meta {
+    flex: 1;
+    font-size: 16px;
+    color: #444;
+}
+.meta p {
+    margin: 10px 0;
+}
+.meta strong {
+    color: #f04e30;
+}
+.add-cart-btn {
+    display: inline-block;
+    background: #28a745;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    text-decoration: none;
+    font-weight: 600;
+    margin-top: 20px;
+    transition: 0.3s;
+}
+.add-cart-btn:hover {
+    background: #218838;
+}
+.back-btn {
+    display: inline-block;
+    background: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+.back-btn:hover {
+    background: #0056b3;
+}
+.reviews {
+    margin-top: 40px;
+}
+.reviews h2 {
+    font-size: 22px;
+    color: #f04e30;
+    margin-bottom: 15px;
+}
+.review {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border-left: 4px solid #f04e30;
+}
+.review strong {
+    color: #333;
+}
+.review span {
+    color: #ffc107;
+    font-weight: bold;
+}
+form {
+    margin-top: 15px;
+    background: #fefefe;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #eee;
+}
+form button.btn {
+    background: #f04e30;
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+form button.btn:hover {
+    background: #d63c22;
+}
+</style>
+
+<div class="product-detail">
+
+  <!-- 🔙 Back to Products -->
+  <div style="margin-bottom:15px;">
+    <a href="{% url 'product_list' %}" class="back-btn">⬅️ Back to Products</a>
+  </div>
+
+  <!-- 🧴 Product Title -->
+  <h1>{{ product.name }}</h1>
+
+  <div class="media">
+    <div>
+      {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+      {% else %}
+        <img src="{% static 'shop/img/placeholder.png' %}" alt="placeholder">
+      {% endif %}
+    </div>
+
+    <div class="meta">
+      <p><strong>Category:</strong> {{ product.category.name }}</p>
+      <p><strong>Price:</strong> ₹{{ product.price }}</p>
+      {% if product.skin_type_tags %}
+        <p><strong>Skin Type:</strong> {{ product.skin_type_tags }}</p>
+      {% endif %}
+      <p><strong>Description:</strong></p>
+      <div style="margin-top:8px; line-height:1.6;">{{ product.description|linebreaks }}</div>
+
+      <!-- 🛒 Add to Cart -->
+      <form method="post" action="{% url 'cart_add' product.id %}">
+        {% csrf_token %}
+        <button type="submit" class="add-cart-btn">🛒 Add to Cart</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 💬 Reviews Section -->
+  <section class="reviews">
+    <h2>💬 Customer Reviews</h2>
+    {% for r in reviews %}
+      <div class="review">
+        <strong>
+          {% if r.user %}
+            {{ r.user.username }}
+          {% else %}
+            Anonymous
+          {% endif %}
+        </strong>
+        <span style="float:right;">★{{ r.rating }}</span>
+        <p style="clear:both;margin-top:6px;">{{ r.comment }}</p>
+      </div>
+    {% empty %}
+      <p>No reviews yet. Be the first to share your experience!</p>
+    {% endfor %}
+  </section>
+
+  <!-- ✍️ Review Form -->
+  {% if user.is_authenticated %}
+    <section style="margin-top:25px;">
+      <h3>✍️ Leave a Review</h3>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn">Submit Review</button>
+      </form>
+    </section>
+  {% else %}
+    <p style="margin-top:20px;">🔒 <a href="{% url 'login' %}">Log in</a> to leave a review.</p>
+  {% endif %}
+
+</div>
+
+{% endblock %}

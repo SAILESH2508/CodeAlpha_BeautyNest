@@ -1,0 +1,50 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+
+<h1 style="text-align:center; margin:20px 0; color:#333;">🛒 Your Cart</h1>
+
+{% if cart %}
+<table style="width:100%; border-collapse:collapse; margin:20px 0; font-size:16px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+  <tr style="background:#f04e30; color:#fff; text-align:left;">
+    <th style="padding:12px; border:1px solid #ddd;">Product</th>
+    <th style="padding:12px; border:1px solid #ddd;">Qty</th>
+    <th style="padding:12px; border:1px solid #ddd;">Price</th>
+    <th style="padding:12px; border:1px solid #ddd;">Total</th>
+    <th style="padding:12px; border:1px solid #ddd;">Action</th>
+  </tr>
+  
+  {% for item in cart %}
+  <tr style="background:#fff; text-align:center;">
+    <td style="padding:12px; border:1px solid #ddd;">{{ item.product.name }}</td>
+    <td style="padding:12px; border:1px solid #ddd;">{{ item.quantity }}</td>
+    <td style="padding:12px; border:1px solid #ddd;">₹{{ item.price }}</td>
+    <td style="padding:12px; border:1px solid #ddd;">₹{{ item.total_price }}</td>
+    <td style="padding:12px; border:1px solid #ddd;">
+      <a href="{% url 'cart_remove' item.product.id %}" 
+         style="color:#f04e30; text-decoration:none; font-weight:bold;">
+         ❌ Remove
+      </a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+<p style="text-align:right; font-size:18px; margin-top:10px;">
+  <strong>Total: ₹{{ cart.get_total_price }}</strong>
+</p>
+
+<div style="text-align:right; margin-top:20px;">
+  <a href="{% url 'checkout' %}" 
+     style="background:#28a745; color:#fff; padding:10px 20px; 
+            border-radius:5px; text-decoration:none; font-weight:bold;">
+     ✅ Proceed to Checkout
+  </a>
+</div>
+
+{% else %}
+<p style="text-align:center; font-size:18px; color:#555; margin-top:40px;">
+  Your cart is empty.
+</p>
+{% endif %}
+
+{% endblock %}

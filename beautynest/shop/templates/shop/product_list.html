@@ -1,0 +1,120 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- 🔍 Filter/Search Bar -->
+<section class="filters" style="margin: 30px 0; text-align: center;">
+  <h2 style="color:#333; font-size:28px; margin-bottom:15px;">✨ Explore Our Collection</h2>
+  <form method="get" class="filter-form" style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px;">
+    <input type="text" name="q" placeholder="Search by name, ingredient or skin type"
+           value="{{ request.GET.q|default_if_none:'' }}"
+           style="padding:10px; border:1px solid #ccc; border-radius:5px; min-width:250px;">
+    
+    <select name="category" style="padding:10px; border:1px solid #ccc; border-radius:5px;">
+      <option value="">All Categories</option>
+      {% for c in categories %}
+        <option value="{{ c.id }}" {% if request.GET.category == c.id|stringformat:"s" %}selected{% endif %}>
+          {{ c.name }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <select name="sort" style="padding:10px; border:1px solid #ccc; border-radius:5px;">
+      <option value="">Sort By</option>
+      <option value="price_asc" {% if request.GET.sort == "price_asc" %}selected{% endif %}>Price: Low to High</option>
+      <option value="price_desc" {% if request.GET.sort == "price_desc" %}selected{% endif %}>Price: High to Low</option>
+      <option value="rating" {% if request.GET.sort == "rating" %}selected{% endif %}>Top Rated</option>
+      <option value="latest" {% if request.GET.sort == "latest" %}selected{% endif %}>Newest</option>
+    </select>
+    
+    <button type="submit" class="btn" 
+            style="background:#f04e30; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer;">
+      🔍 Filter
+    </button>
+  </form>
+</section>
+
+<!-- 📦 Product Grid -->
+<section class="product-grid" style="margin:40px 0;">
+  <div class="grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:25px;">
+    {% for p in products %}
+      <article class="card" style="border:1px solid #eee; border-radius:10px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.1); background:white; transition:0.3s;">
+        <a href="{% url 'product_detail' slug=p.slug %}">
+          {% if p.image %}
+            <img src="{{ p.image.url }}" alt="{{ p.name }}" style="width:100%; height:220px; object-fit:cover;">
+          {% else %}
+            <img src="{% static 'shop/img/placeholder.png' %}" alt="placeholder" style="width:100%; height:220px; object-fit:cover;">
+          {% endif %}
+        </a>
+        <div style="padding:15px; text-align:center;">
+          <h3 class="product-name" style="margin:10px 0; font-size:18px; color:#333;">{{ p.name }}</h3>
+          <p class="price" style="color:#f04e30; font-weight:bold; font-size:16px;">₹{{ p.price }}</p>
+          
+          {% if p.average_rating %}
+            <p class="rating" style="color:#ffb400; font-size:14px;">⭐ {{ p.average_rating|floatformat:1 }}/5</p>
+          {% else %}
+            <p class="rating" style="color:#777; font-size:14px;">No ratings yet</p>
+          {% endif %}
+
+          <!-- ✅ View & Add to Cart buttons (same size, same style) -->
+          <div style="margin-top:10px; display:flex; justify-content:center; gap:10px;">
+
+            <!-- View Details Button -->
+            <form method="get" action="{% url 'product_detail' slug=p.slug %}" style="flex:1; display:flex;">
+              <button type="submit" 
+                      style="flex:1; display:flex; align-items:center; justify-content:center;
+                             background:#28a745; color:#fff; padding:10px; border:none; border-radius:5px;
+                             font-size:14px; font-weight:600; cursor:pointer; min-height:40px;">
+                🔍 View Details
+              </button>
+            </form>
+
+            <!-- Add to Cart Button -->
+            <form method="post" action="{% url 'cart_add' p.id %}" style="flex:1; display:flex;">
+              {% csrf_token %}
+              <button type="submit" 
+                      style="flex:1; display:flex; align-items:center; justify-content:center;
+                             background:#f04e30; color:#fff; padding:10px; border:none; border-radius:5px;
+                             font-size:14px; font-weight:600; cursor:pointer; min-height:40px;">
+                🛒 Add to Cart
+              </button>
+            </form>
+
+          </div>
+        </div>
+      </article>
+    {% empty %}
+      <p style="text-align:center; font-size:18px; color:#555;">❌ No products found. Try another search.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- 📄 Pagination -->
+{% if products.has_other_pages %}
+<div class="pagination" style="text-align:center; margin-top:30px;">
+  <span class="step-links">
+    {% if products.has_previous %}
+      <a href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">⏮ First</a>
+      <a href="?page={{ products.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">⬅ Prev</a>
+    {% endif %}
+
+    <span class="current">Page {{ products.number }} of {{ products.paginator.num_pages }}</span>
+
+    {% if products.has_next %}
+      <a href="?page={{ products.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">Next ➡</a>
+      <a href="?page={{ products.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">Last ⏭</a>
+    {% endif %}
+  </span>
+</div>
+{% endif %}
+
+<!-- 💡 Extra Section -->
+<section style="margin:60px 0; text-align:center; background:#fafafa; padding:30px; border-radius:10px;">
+  <h3 style="margin-bottom:15px; color:#333;">💎 Why Shop with BeautyNest?</h3>
+  <p style="max-width:600px; margin:0 auto; font-size:16px; color:#666;">
+    ✨ 100% Authentic Products | 🚚 Fast Delivery | 🔒 Secure Payments | 💬 24/7 Support
+  </p>
+</section>
+
+{% endblock %}

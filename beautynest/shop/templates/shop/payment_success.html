@@ -1,0 +1,45 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+
+<section style="margin:60px auto; max-width:700px; text-align:center; background:#f9f9f9; padding:40px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+  
+  <!-- ✅ Success Icon -->
+  <div style="font-size:60px; color:#28a745; margin-bottom:20px;">✔️</div>
+  
+  <!-- ✅ Heading -->
+  <h1 style="color:#333; font-size:28px; margin-bottom:15px;">Payment Successful</h1>
+  <p style="font-size:16px; color:#555; margin-bottom:25px;">
+    🎉 Thank you for your purchase! Your order has been placed successfully.
+  </p>
+
+  <!-- ✅ Receipt Button -->
+  <a href="{% url 'receipt' order.id %}" 
+     style="display:inline-block; background:#f04e30; color:#fff; padding:12px 24px; border-radius:6px; text-decoration:none; font-weight:600; font-size:16px; transition:0.3s;">
+    📄 Download / View Receipt
+  </a>
+
+  <!-- ✅ Decorative Divider -->
+  <hr style="margin:40px 0; border:none; border-top:1px dashed #ddd;">
+
+  <!-- ✅ Next Steps (Static Text Only) -->
+  <div style="margin-top:10px; background:#fff; padding:20px; border-radius:8px; border:1px solid #eee;">
+    <h3 style="margin-bottom:10px; color:#333;">🚚 What Happens Next?</h3>
+    <p style="font-size:15px; color:#555; line-height:1.8; margin:0;">
+      ✅ You’ll receive a confirmation email.<br>
+      ✅ Our team is preparing your order.<br>
+      ✅ You’ll get tracking details once it’s shipped.
+    </p>
+  </div>
+
+  <!-- ✅ Back to Shop Button -->
+  <div style="margin-top:30px;">
+  <a href="{% url 'product_list' %}" 
+     style="display:inline-block; background:#28a745; color:#fff; padding:10px 20px; border-radius:6px; text-decoration:none; font-weight:600; font-size:14px;">
+    🛒 Continue Shopping
+  </a>
+</div>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,126 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+<div class="contact-container">
+    <h2>📩 Contact Us</h2>
+    <p class="subtitle">We’d love to hear from you! Please fill out the form below.</p>
+
+    {% if success %}
+        <p class="success-msg">✅ Thank you! Your message has been sent.</p>
+    {% endif %}
+
+    <form method="post" class="contact-form">
+        {% csrf_token %}
+
+        <label for="id_name">Full Name</label>
+        <input type="text" name="name" id="id_name" placeholder="Enter your full name" required>
+
+        <label for="id_email">Email Address</label>
+        <input type="email" name="email" id="id_email" placeholder="Enter your email" required>
+
+        <label for="id_subject">Subject</label>
+        <input type="text" name="subject" id="id_subject" placeholder="What’s this about?" required>
+
+        <label for="id_message">Message</label>
+        <textarea name="message" id="id_message" placeholder="Write your message..." required></textarea>
+
+        <button type="submit" class="btn">Send Message</button>
+    </form>
+
+    <div class="contact-info">
+        <h3>📍 Our Office</h3>
+        <p>123 Beauty Street, Skincare City, India</p>
+
+        <h3>📞 Call Us</h3>
+        <p>+91 98765 43210</p>
+
+        <h3>✉ Email</h3>
+        <p>support@beautynest.com</p>
+    </div>
+</div>
+
+<style>
+    .contact-container {
+        max-width: 650px;
+        margin: 50px auto;
+        padding: 35px;
+        background: #fff;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+        border-radius: 12px;
+        text-align: center;
+    }
+    .contact-container h2 {
+        margin-bottom: 10px;
+        color: #1d3557;
+        font-size: 26px;
+    }
+    .subtitle {
+        margin-bottom: 25px;
+        font-size: 15px;
+        color: #666;
+    }
+    .success-msg {
+        color: green;
+        font-weight: bold;
+        margin-bottom: 20px;
+        background: #e6ffe6;
+        padding: 10px;
+        border-radius: 5px;
+    }
+    /* --- FORM STYLING --- */
+    .contact-form {
+        margin-bottom: 35px;
+        text-align: left;
+    }
+    .contact-form label {
+        font-weight: 600;
+        color: #333;
+        display: block;
+        margin-bottom: 6px;
+    }
+    .contact-form input,
+    .contact-form textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        margin-bottom: 18px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+    }
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+        border-color: #457b9d;
+        outline: none;
+        box-shadow: 0 0 6px rgba(69,123,157,0.3);
+    }
+    textarea {
+        resize: none;
+        min-height: 100px;
+    }
+    .btn {
+        width: 100%;
+        padding: 14px;
+        background: #1d3557;
+        color: white;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: 0.3s;
+    }
+    .btn:hover {
+        background: #457b9d;
+        transform: translateY(-2px);
+    }
+    .contact-info {
+        text-align: left;
+        margin-top: 25px;
+    }
+    .contact-info h3 {
+        margin-top: 18px;
+        color: #e63946;
+        font-size: 18px;
+    }
+</style>
+{% endblock %}

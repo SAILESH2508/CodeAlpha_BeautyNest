@@ -1,0 +1,125 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Hero or Welcome Section -->
+<section class="hero">
+  <h1>Welcome to BeautyNest</h1>
+  <p class="intro-text">
+    At <strong>BeautyNest</strong>, we believe beauty should be personal.
+    Our curated skincare and beauty products are matched to your unique skin type,
+    goals, and preferences — helping you feel confident every day.
+  </p>
+</section>
+
+<!-- About Section -->
+<section class="about">
+  <h2>About Us</h2>
+  <p class="about-text">
+    Founded with a passion for skincare science, BeautyNest brings together trusted brands,
+    dermatologist-approved formulas, and cutting-edge innovations. Whether you have oily,
+    dry, combination, or sensitive skin, we have products tailored just for you.
+  </p>
+</section>
+
+<hr>
+
+<!-- Login Redirect Section -->
+<section class="login-section">
+  <h2>Login</h2>
+  <p>
+    Already have an account? <a href="{% url 'login' %}">Click here to login</a>.
+  </p>
+  <p>
+    Don't have an account? <a href="{% url 'signup' %}">Sign up here</a>.
+  </p>
+</section>
+
+
+<style>
+/* --- HERO SECTION --- */
+.hero {
+    background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+    padding: 70px 20px;
+    text-align: center;
+    color: #1d3557;
+    border-radius: 12px;
+    margin-bottom: 40px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+.hero h1 {
+    font-size: 38px;
+    margin-bottom: 18px;
+    color: #e63946;
+}
+.hero .intro-text {
+    font-size: 17px;
+    line-height: 1.6;
+    max-width: 700px;
+    margin: 0 auto;
+    color: #333;
+}
+
+/* --- ABOUT SECTION --- */
+.about {
+    max-width: 800px;
+    margin: 40px auto;
+    text-align: center;
+}
+.about h2 {
+    font-size: 26px;
+    color: #1d3557;
+    margin-bottom: 18px;
+}
+.about-text {
+    font-size: 16px;
+    line-height: 1.7;
+    color: #444;
+}
+
+/* --- LOGIN SECTION --- */
+.login-section {
+    max-width: 650px;
+    margin: 40px auto;
+    text-align: center;
+    padding: 25px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+.login-section h2 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: #457b9d;
+}
+.login-section p {
+    margin: 10px 0;
+    font-size: 16px;
+}
+.login-section a {
+    color: #e63946;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+.login-section a:hover {
+    text-decoration: underline;
+    color: #1d3557;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 28px;
+    }
+    .hero .intro-text {
+        font-size: 15px;
+    }
+    .about h2, .login-section h2 {
+        font-size: 22px;
+    }
+}
+</style>
+
+{% endblock %}

@@ -1,0 +1,27 @@
+<!-- shop/templates/includes/footer.html -->
+<style>
+    footer {
+        background-color: #ff4f79;
+        color: white;
+        text-align: center;
+        padding: 15px 0;
+        margin-top: 40px;
+        font-size: 14px;
+    }
+    footer a {
+        color: white;
+        text-decoration: underline;
+    }
+    footer a:hover {
+        color: #ffe0ec;
+    }
+</style>
+
+<footer>
+    <p>&copy; {{ now|date:"Y" }} BeautyNest. All rights reserved.</p>
+    <p>
+        <a href="{% url 'about' %}">About Us</a> | 
+        <a href="{% url 'contact' %}">Contact</a> | 
+        <a href="{% url 'products' %}">Shop</a>
+    </p>
+</footer>

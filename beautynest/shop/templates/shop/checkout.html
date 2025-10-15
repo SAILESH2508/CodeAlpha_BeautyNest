@@ -1,0 +1,190 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+.checkout-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    font-family: 'Arial', sans-serif;
+}
+.checkout-container h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+    font-size: 32px;
+}
+.summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+    font-size: 16px;
+}
+.summary-table th, .summary-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+}
+.summary-table th {
+    background: #f04e30;
+    color: white;
+    font-size: 18px;
+}
+.method-box {
+    display: none;
+    margin-top: 25px;
+    padding: 25px;
+    border-radius: 12px;
+    background: #f9f9f9;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    transition: all 0.3s ease-in-out;
+}
+.method-box h3 {
+    margin-bottom: 15px;
+    font-size: 22px;
+    color: #f04e30;
+}
+textarea, input, select {
+    width: 95%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-top: 8px;
+    font-size: 15px;
+}
+.pay-btn {
+    display: block;
+    width: 95%;
+    background: #28a745;
+    color: #fff;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 18px;
+    margin-top: 20px;
+    cursor: pointer;
+    border: none;
+    transition: 0.3s;
+}
+.pay-btn:hover { background: #218838; }
+.payment-instructions {
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+.payment-instructions p { margin: 8px 0; }
+.icon { font-size: 22px; margin-right: 8px; }
+</style>
+
+<div class="checkout-container">
+  <h1>🛍 Checkout</h1>
+
+  <!-- Order Summary -->
+  <table class="summary-table">
+    <tr>
+      <th>Product</th>
+      <th>Qty</th>
+      <th>Price</th>
+      <th>Total</th>
+    </tr>
+    {% for item in cart %}
+    <tr>
+      <td>{{ item.product.name }}</td>
+      <td>{{ item.quantity }}</td>
+      <td>₹{{ item.price }}</td>
+      <td>₹{{ item.total_price }}</td>
+    </tr>
+    {% endfor %}
+    <tr>
+      <td colspan="3"><strong>Grand Total</strong></td>
+      <td><strong>₹{{ cart.get_total_price }}</strong></td>
+    </tr>
+  </table>
+
+  <!-- Payment Form -->
+  <form method="post" id="cod-form">
+    {% csrf_token %}
+    <label for="payment_method"><strong>Select Payment Method:</strong></label>
+    <select name="payment_method" id="payment_method" onchange="showSection(this.value)">
+      <option value="">--Select--</option>
+      <option value="razorpay">💳 Razorpay</option>
+      <option value="cod">🚚 Cash on Delivery</option>
+    </select>
+
+    <!-- COD Section -->
+    <div id="cod" class="method-box">
+      <h3>🚚 Cash on Delivery</h3>
+      <div class="payment-instructions">
+        <p><span class="icon">📝</span>Please provide your full delivery address below.</p>
+        <p><span class="icon">⏱️</span>Delivery time: 2–5 business days.</p>
+        <p><span class="icon">💵</span>Have cash ready at the time of delivery.</p>
+        <p><span class="icon">📞</span>You will receive a confirmation SMS/Email after order placement.</p>
+      </div>
+      <label>Delivery Address</label>
+      <textarea name="delivery_address" rows="4" placeholder="123 Street, City, ZIP"></textarea>
+      <button type="submit" class="pay-btn">🚚 Place COD Order</button>
+    </div>
+  </form>
+
+  <!-- Razorpay Section -->
+  <div id="razorpay" class="method-box">
+    <h3>💳 Pay with Razorpay</h3>
+    <div class="payment-instructions">
+      <p><span class="icon">🚀</span>Complete your payment securely using Razorpay.</p>
+      <p><span class="icon">💳</span>You can pay via Netbanking, Credit/Debit Card, or UPI.</p>
+      <p><span class="icon">🖱</span>Click the <strong>Pay Now</strong> button below. A secure Razorpay popup will appear.</p>
+      <p><span class="icon">📦</span>Your order will be confirmed only after successful payment.</p>
+    </div>
+    <button type="button" onclick="payWithRazorpay()" class="pay-btn">💳 Pay Now with Razorpay</button>
+  </div>
+</div>
+
+<script>
+function showSection(method) {
+  const methods = ['cod', 'razorpay'];
+  methods.forEach(m => {
+    document.getElementById(m).style.display = (method === m) ? 'block' : 'none';
+  });
+}
+</script>
+
+<!-- Razorpay Checkout Script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+function payWithRazorpay() {
+  var options = {
+    "key": "{{ razorpay_key_id }}",
+    "amount": "{{ amount }}",
+    "currency": "INR",
+    "name": "BeautyNest",
+    "description": "Order Payment",
+    "order_id": "{{ razorpay_order_id }}",
+    "handler": function (response) {
+      // ✅ Send response to backend for verification
+      fetch("{% url 'payment_success' order.id %}", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "X-CSRFToken": "{{ csrf_token }}"
+          },
+          body: new URLSearchParams({
+              "razorpay_payment_id": response.razorpay_payment_id,
+              "razorpay_order_id": response.razorpay_order_id,
+              "razorpay_signature": response.razorpay_signature
+          })
+      }).then(res => {
+          // Redirect to success page after backend verification
+          window.location.href = "{% url 'payment_success' order.id %}";
+      });
+    },
+    "theme": { "color": "#F37254" }
+  };
+  var rzp1 = new Razorpay(options);
+  rzp1.open();
+}
+</script>
+
+{% endblock %}
